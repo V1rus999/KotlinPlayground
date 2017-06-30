@@ -29,9 +29,9 @@ class PrintToFile : Printable {
 
 }
 
-class Printer {
+open class Printer  {
 
-    fun <T : Printable> print(t1: T) {
+    open fun <T : Printable> print(t1: T) {
         println(t1.print())
     }
 }
