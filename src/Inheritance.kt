@@ -3,7 +3,7 @@
  */
 open class BasicDriving { //Open : This class can be inherited. No Open : This class is final
 
-    var speed: Int = 0;
+    var speed: Int = 0
 
     fun faster(speed: Int) {
         this.speed += speed
