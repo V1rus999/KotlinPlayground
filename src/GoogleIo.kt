@@ -26,8 +26,10 @@ fun main(args: Array<String>) {
     val costs = tickets + popcorn
     println("Tickets : ${tickets.amount} + Popcorn : ${popcorn.amount} = $costs")
     sendPayment(message = "Hey", money = costs) //Named parameters, useful in legacy code
+}
 
-    
+fun elvisPrint(money: Money?) { //? elvis operator means money can be null. !! = Throw exception if null. ? = Shorthand if != null
+    println("${money?.amount}")
 }
 
 private val Int.bd: BigDecimal
