@@ -16,4 +16,10 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/start_find_age_btn"
+        android:layout_width="match_parent"
+        android:text="Start Find My Age"
+        android:layout_height="wrap_content" />
+
 </android.support.constraint.ConstraintLayout>

@@ -10,5 +10,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         hello_textview.text = "Hi"
+        start_find_age_btn.setOnClickListener({ FindAgeActivity.start(this) })
     }
 }
