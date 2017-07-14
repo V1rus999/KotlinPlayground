@@ -14,7 +14,8 @@ class MainActivity : AppCompatActivity() {
         hello_textview.text = "Hi"
         toast("Hi")
         start_find_age_btn.setOnClickListener({ FindAgeActivity.start(this) })
+        start_tictac_btn.setOnClickListener({ TicTacToeActivity.start(this) })
     }
 
-    fun Context.toast(text:String) = Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+    fun Context.toast(text: String) = Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 }
