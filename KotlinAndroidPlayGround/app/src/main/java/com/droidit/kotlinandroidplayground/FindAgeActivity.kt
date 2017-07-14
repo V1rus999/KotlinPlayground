@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_find_age.*
+import java.util.*
 
 class FindAgeActivity : AppCompatActivity() {
 
@@ -13,8 +15,19 @@ class FindAgeActivity : AppCompatActivity() {
         }
     }
 
+    //Really basic, will probably crash on some inputs
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_find_age)
+        find_age_calculate_btn.setOnClickListener({ find_age_output_tv.text = getAge(find_age_et.text.toString()).toString() })
+    }
+
+    fun getAge(inputAge: String?): Int {
+        inputAge?.let {
+            val inputAgeInt = inputAge.toInt()
+            val currentDate = Calendar.getInstance().get(Calendar.YEAR)
+            return currentDate - inputAgeInt
+        }
+        return 0
     }
 }
