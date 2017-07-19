@@ -1,5 +1,6 @@
 package com.droidit.kotlinandroidplayground.kotlinmon
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -34,7 +35,7 @@ class KotlinMonMapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationL
 
     private lateinit var mMap: GoogleMap
     private lateinit var locationTimer: Timer
-    private lateinit var youMarker: Marker
+    private var youMarker: Marker? = null
     private val smilies = ArrayList<HappyFace>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,28 +66,25 @@ class KotlinMonMapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationL
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Add a marker in Sydney and move the camera
-        val locationMe = LatLng(-26.149601, 27.93)
-        youMarker = mMap.addMarker(MarkerOptions().position(locationMe).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("jenkinspepe", 100, 100))).title("Me"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationMe, 14f))
-
         val permissionCheck = PermissionChecker()
-        permissionCheck.checkLocationPermission(this, { loadSmilies()
-            startCheckingLocation() })
+        permissionCheck.checkLocationPermission(this, {
+            loadSmilies()
+            startCheckingLocation()
+        })
     }
 
-    fun resizeMapIcons(iconName: String, width: Int, height: Int): Bitmap {
-        val imageBitmap = BitmapFactory.decodeResource(resources, resources.getIdentifier(iconName, "drawable", packageName))
+    fun resizeMapIcons(iconId: Int, width: Int, height: Int): Bitmap {
+        val imageBitmap = BitmapFactory.decodeResource(resources, iconId)
         val resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false)
         return resizedBitmap
     }
 
     fun loadSmilies() {
-        smilies.add(HappyFace("Smily1", 20.0, -26.149601, 27.92, "happy_face"))
-        smilies.add(HappyFace("Smily2", 22.0, -26.2, 27.91, "happy_face"))
+        smilies.add(HappyFace("Smily1", 20.0, -26.149601, 27.92, R.drawable.happy_face))
+        smilies.add(HappyFace("Smily2", 22.0, -26.2, 27.91, R.drawable.happy_face))
 
-        for ((name, _, lat, long, imageName) in smilies) {
-            mMap.addMarker(MarkerOptions().position(LatLng(lat, long)).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(imageName!!, 100, 100))).title(name))
+        for ((name, _, lat, long, resId) in smilies) {
+            mMap.addMarker(MarkerOptions().position(LatLng(lat, long)).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(resId!!, 100, 100))).title(name))
         }
     }
 
@@ -95,6 +93,7 @@ class KotlinMonMapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationL
         locationTimer.scheduleAtFixedRate(0, 3000, { checkCurrentLocation() })
     }
 
+    @SuppressLint("MissingPermission")
     fun checkCurrentLocation() {
         runOnUiThread {
             val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -106,9 +105,9 @@ class KotlinMonMapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationL
 
     override fun onLocationChanged(p0: Location?) {
         val locationMe = LatLng(p0!!.latitude, p0.longitude)
-        youMarker.remove()
-        youMarker = mMap.addMarker(MarkerOptions().position(locationMe).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("jenkinspepe", 100, 100))).title("Me"))
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(youMarker.position))
+        youMarker?.remove()
+        youMarker = mMap.addMarker(MarkerOptions().position(locationMe).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.jenkinspepe, 100, 100))).title("Me"))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(youMarker!!.position, 12f))
     }
 
     override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
