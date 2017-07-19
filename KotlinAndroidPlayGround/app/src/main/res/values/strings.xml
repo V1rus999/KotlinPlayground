@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">KotlinAndroidPlayGround</string>
+    <string name="title_activity_kotlin_mon_maps">KotlinMonMap</string>
 </resources>
