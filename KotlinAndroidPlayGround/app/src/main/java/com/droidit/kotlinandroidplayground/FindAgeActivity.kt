@@ -16,7 +16,6 @@ class FindAgeActivity : AppCompatActivity() {
         }
     }
 
-
     //Really basic, will probably crash on some inputs
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
