@@ -19,7 +19,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate
@@ -34,14 +33,13 @@ class KotlinMonMapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationL
     }
 
     private lateinit var mMap: GoogleMap
-    private lateinit var locationTimer: Timer
-    private var youMarker: Marker? = null
+    private var locationTimer: Timer = Timer()
     private val smilies = ArrayList<HappyFace>()
+    private lateinit var player: Player
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_kotlin_mon_maps)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -68,6 +66,7 @@ class KotlinMonMapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationL
 
         val permissionCheck = PermissionChecker()
         permissionCheck.checkLocationPermission(this, {
+            loadPlayer()
             loadSmilies()
             startCheckingLocation()
         })
@@ -79,12 +78,18 @@ class KotlinMonMapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationL
         return resizedBitmap
     }
 
+    fun loadPlayer() {
+        player = Player("Me", resId = R.drawable.jenkinspepe)
+    }
+
     fun loadSmilies() {
         smilies.add(HappyFace("Smily1", 20.0, -26.149601, 27.92, R.drawable.happy_face))
         smilies.add(HappyFace("Smily2", 22.0, -26.2, 27.91, R.drawable.happy_face))
 
-        for ((name, _, lat, long, resId) in smilies) {
-            mMap.addMarker(MarkerOptions().position(LatLng(lat, long)).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(resId!!, 100, 100))).title(name))
+        for (it in smilies) {
+            it.marker = mMap.addMarker(MarkerOptions().position(LatLng(it.lat, it.long))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(it.resId!!, 100, 100)))
+                    .title(it.name))
         }
     }
 
@@ -104,10 +109,22 @@ class KotlinMonMapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationL
     fun l(message: String) = Log.e(KotlinMonMapsActivity.toString(), message)
 
     override fun onLocationChanged(p0: Location?) {
-        val locationMe = LatLng(p0!!.latitude, p0.longitude)
-        youMarker?.remove()
-        youMarker = mMap.addMarker(MarkerOptions().position(locationMe).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.jenkinspepe, 100, 100))).title("Me"))
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(youMarker!!.position, 12f))
+        player.lat = p0!!.latitude
+        player.long = p0.longitude
+
+        player.marker?.remove()
+        player.marker = mMap.addMarker(MarkerOptions().position(LatLng(player.lat!!, player.long!!)).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(player.resId, 100, 100))).title(player.name))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(player.marker!!.position, 12f))
+        smilies.removeAll { it ->
+            if (it.checkCollision(player.location())) {
+                it.marker!!.remove()
+                player.power += it.power
+                return@removeAll true
+            }
+            return@removeAll false
+        }
+        l("${player.power}")
+        l(smilies.toString())
     }
 
     override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
