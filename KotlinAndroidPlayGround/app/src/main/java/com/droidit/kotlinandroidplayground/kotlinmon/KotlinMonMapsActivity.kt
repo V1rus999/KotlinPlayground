@@ -115,6 +115,7 @@ class KotlinMonMapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationL
         player.marker?.remove()
         player.marker = mMap.addMarker(MarkerOptions().position(LatLng(player.lat!!, player.long!!)).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(player.resId, 100, 100))).title(player.name))
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(player.marker!!.position, 12f))
+
         smilies.removeAll { it ->
             if (it.checkCollision(player.location())) {
                 it.marker!!.remove()

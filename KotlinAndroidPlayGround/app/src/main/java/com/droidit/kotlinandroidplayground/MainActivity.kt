@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.droidit.kotlinandroidplayground.kotlinmon.KotlinMonMapsActivity
+import com.droidit.kotlinandroidplayground.sunset.SunsetActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -17,6 +18,7 @@ class MainActivity : AppCompatActivity() {
         start_find_age_btn.setOnClickListener({ FindAgeActivity.start(this) })
         start_tictac_btn.setOnClickListener({ TicTacToeActivity.start(this) })
         start_kotlinmon_btn.setOnClickListener({ KotlinMonMapsActivity.start(this) })
+        start_sunset_btn.setOnClickListener({ SunsetActivity.start(this) })
     }
 
     fun Context.toast(text: String) = Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
